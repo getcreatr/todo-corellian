@@ -6,10 +6,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5001:8080"
+      - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=http://+:5001
       - ConnectionStrings__DefaultConnection=Data Source=/app/data/todo.db
     volumes:
       - todo-data:/app/data
@@ -22,10 +22,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3007:3000"
+      - "3007:3007"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:5001/graphql
+      - NEXT_PUBLIC_GRAPHQL_ENDPOINT=https://todo.getcreatr.com/graphql
     depends_on:
       - backend
     networks:

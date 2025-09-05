@@ -38,8 +38,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3007
 
-ENV PORT 3000
+ENV PORT 3007
+ENV NEXT_PUBLIC_GRAPHQL_ENDPOINT=https://todo.getcreatr.com/graphql
 
 CMD ["node", "server.js"]
