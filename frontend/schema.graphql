@@ -1,12 +1,10 @@
 type Query {
-  getAllTasks: [TaskItem!]!
-  getTaskById(id: Int!): TaskItem
+  allTasks: [TaskItem!]!
 }
 
 type Mutation {
   createTask(input: CreateTaskInput!): TaskItem!
   updateTaskStatus(input: UpdateTaskStatusInput!): TaskItem!
-  deleteTask(id: Int!): Boolean!
 }
 
 type TaskItem {

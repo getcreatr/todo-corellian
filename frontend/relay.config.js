@@ -1,6 +1,6 @@
 module.exports = {
   src: "./src",
-  language: "typescript",
-  schema: "http://localhost:5001/graphql",
+  language: "typescript", 
+  schema: "./schema.graphql",
   excludes: ["**/node_modules/**", "**/__mocks__/**", "**/__generated__/**"],
 };

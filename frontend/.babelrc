@@ -1,0 +1,9 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    ["relay", {
+      "src": "./src",
+      "schema": "./schema.json"
+    }]
+  ]
+}

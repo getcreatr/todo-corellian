@@ -7,7 +7,7 @@ import {
 } from 'relay-runtime';
 
 const fetchQuery: FetchFunction = async (params, variables) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:5001/graphql', {
+  const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:5211/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

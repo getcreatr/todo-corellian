@@ -1,95 +1,104 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useMutation } from 'react-relay';
 import {
   Button,
   Form,
   TextField,
   TextArea,
+  Flex,
 } from '@adobe/react-spectrum';
+import { CreateTaskMutation } from '../mutations/CreateTask';
+import type { CreateTaskMutation as CreateTaskMutationType } from '../mutations/__generated__/CreateTaskMutation.graphql';
 
-interface TaskFormProps {
-  onTaskCreated: () => void;
-}
-
-export function TaskForm({ onTaskCreated }: TaskFormProps) {
+export function TaskForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(false);
+  
+  const [commitMutation] = useMutation<CreateTaskMutationType>(CreateTaskMutation);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     
-    try {
-      const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:5001/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    commitMutation({
+      variables: {
+        input: {
+          title: title.trim(),
+          description: description.trim() || null,
         },
-        body: JSON.stringify({
-          query: `
-            mutation CreateTask($input: CreateTaskInput!) {
-              createTask(input: $input) {
-                id
-                title
-                description
-                status
-                createdAt
-                updatedAt
-              }
-            }
-          `,
-          variables: {
-            input: {
-              title: title.trim(),
-              description: description.trim() || undefined,
-            },
-          },
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (result.data?.createTask) {
+      },
+      onCompleted: () => {
+        // Fast, immediate feedback
         setTitle('');
         setDescription('');
-        onTaskCreated();
-      } else {
-        console.error('Failed to create task:', result.errors);
-      }
-    } catch (error) {
-      console.error('Failed to create task:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+        setJustSubmitted(true);
+        setIsSubmitting(false);
+        
+        // Brief success state
+        setTimeout(() => {
+          setJustSubmitted(false);
+        }, 1000);
+      },
+      onError: (error) => {
+        console.error('Failed to create task:', error);
+        setIsSubmitting(false);
+      },
+      updater: (store) => {
+        const root = store.getRoot();
+        const newTask = store.getRootField('createTask');
+        const tasks = root.getLinkedRecords('allTasks') || [];
+        root.setLinkedRecords([...tasks, newTask], 'allTasks');
+      },
+    });
   };
 
   return (
-    <Form onSubmit={handleSubmit} maxWidth="size-5000">
-      <TextField
-        label="Task Title"
-        value={title}
-        onChange={setTitle}
-        isRequired
-        maxWidth="100%"
-      />
-      <TextArea
-        label="Description (optional)"
-        value={description}
-        onChange={setDescription}
-        maxWidth="100%"
-      />
-      <Button
-        type="submit"
-        variant="cta"
-        isDisabled={!title.trim() || isSubmitting}
-      >
-        {isSubmitting ? 'Creating...' : 'Add Task'}
-      </Button>
-    </Form>
+    <Form onSubmit={handleSubmit}>
+        <TextField
+          label="Task Title"
+          placeholder="What would you like to accomplish?"
+          value={title}
+          onChange={setTitle}
+          isRequired
+          validationState={title.trim() ? 'valid' : undefined}
+          UNSAFE_style={{
+            transition: 'all 0.3s ease'
+          }}
+        />
+        
+        <TextArea
+          label="Description"
+          placeholder="Add context, goals, or additional details..."
+          value={description}
+          onChange={setDescription}
+          height="size-1200"
+          UNSAFE_style={{
+            transition: 'all 0.3s ease'
+          }}
+        />
+        
+        <Flex justifyContent="end" marginTop="size-300">
+          <Button
+            type="submit"
+            variant="cta"
+            isDisabled={!title.trim() || isSubmitting}
+          >
+            {isSubmitting ? (
+              <>⏳ Creating Magic...</>
+            ) : justSubmitted ? (
+              <>✅ Success!</>
+            ) : (
+              <>🚀 Create Task</>
+            )}
+          </Button>
+        </Flex>
+      </Form>
   );
 }

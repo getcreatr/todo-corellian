@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<05c74e578ca12bc36b05e6c5593050a0>>
+ * @generated SignedSource<<ed58c2c2f65c665a26264964b75aa2f0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import { ConcreteRequest } from 'relay-runtime';
 export type TaskStatus = "COMPLETED" | "PENDING" | "%future added value";
 export type GetAllTasksQuery$variables = Record<PropertyKey, never>;
 export type GetAllTasksQuery$data = {
-  readonly getAllTasks: ReadonlyArray<{
+  readonly allTasks: ReadonlyArray<{
     readonly createdAt: any;
     readonly description: string | null | undefined;
     readonly id: number;
@@ -33,7 +33,7 @@ var v0 = [
     "args": null,
     "concreteType": "TaskItem",
     "kind": "LinkedField",
-    "name": "getAllTasks",
+    "name": "allTasks",
     "plural": true,
     "selections": [
       {
@@ -100,16 +100,16 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "5b6ab93e57ddf61ce5a38257ab5d86ae",
+    "cacheID": "2cbac732c9e08fcf0b82032d5259308a",
     "id": null,
     "metadata": {},
     "name": "GetAllTasksQuery",
     "operationKind": "query",
-    "text": "query GetAllTasksQuery {\n  getAllTasks {\n    id\n    title\n    description\n    status\n    createdAt\n    updatedAt\n  }\n}\n"
+    "text": "query GetAllTasksQuery {\n  allTasks {\n    id\n    title\n    description\n    status\n    createdAt\n    updatedAt\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c800c7b01ab97d7777f53ac3dc8fd60d";
+(node as any).hash = "c05a8c47c5ec883a9a7b4ca789990ab5";
 
 export default node;
