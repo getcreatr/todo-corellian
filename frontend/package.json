@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "npm run relay && next dev --turbopack",
+    "build": "npm run relay && next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "relay": "relay-compiler"
   },
   "dependencies": {
     "@adobe/react-spectrum": "^3.44.1",
+    "@types/relay-runtime": "^19.0.2",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
