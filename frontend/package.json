@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run relay && next dev --turbopack",
-    "build": "npm run relay && next build --turbopack",
+    "dev": "bun run relay && next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "relay": "relay-compiler"

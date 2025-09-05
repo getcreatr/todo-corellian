@@ -7,8 +7,6 @@ import {
   TextField,
   TextArea,
 } from '@adobe/react-spectrum';
-import { useMutation } from 'react-relay';
-import { CreateTaskMutation } from '../mutations/CreateTask';
 
 interface TaskFormProps {
   onTaskCreated: () => void;
@@ -17,29 +15,57 @@ interface TaskFormProps {
 export function TaskForm({ onTaskCreated }: TaskFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [commitMutation, isMutationInFlight] = useMutation(CreateTaskMutation);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) return;
+    if (!title.trim() || isSubmitting) return;
 
-    commitMutation({
-      variables: {
-        input: {
-          title: title.trim(),
-          description: description.trim() || undefined,
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:5001/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      },
-      onCompleted: () => {
+        body: JSON.stringify({
+          query: `
+            mutation CreateTask($input: CreateTaskInput!) {
+              createTask(input: $input) {
+                id
+                title
+                description
+                status
+                createdAt
+                updatedAt
+              }
+            }
+          `,
+          variables: {
+            input: {
+              title: title.trim(),
+              description: description.trim() || undefined,
+            },
+          },
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.data?.createTask) {
         setTitle('');
         setDescription('');
         onTaskCreated();
-      },
-      onError: (error) => {
-        console.error('Failed to create task:', error);
-      },
-    });
+      } else {
+        console.error('Failed to create task:', result.errors);
+      }
+    } catch (error) {
+      console.error('Failed to create task:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,9 +86,9 @@ export function TaskForm({ onTaskCreated }: TaskFormProps) {
       <Button
         type="submit"
         variant="cta"
-        isDisabled={!title.trim() || isMutationInFlight}
+        isDisabled={!title.trim() || isSubmitting}
       >
-        {isMutationInFlight ? 'Creating...' : 'Add Task'}
+        {isSubmitting ? 'Creating...' : 'Add Task'}
       </Button>
     </Form>
   );

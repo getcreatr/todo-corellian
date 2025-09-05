@@ -12,8 +12,6 @@ import {
 } from '@adobe/react-spectrum';
 import CheckmarkCircle from '@spectrum-icons/workflow/CheckmarkCircle';
 import Clock from '@spectrum-icons/workflow/Clock';
-import { useMutation } from 'react-relay';
-import { UpdateTaskStatusMutation } from '../mutations/UpdateTaskStatus';
 
 interface Task {
   id: number;
@@ -30,25 +28,47 @@ interface TaskListProps {
 }
 
 export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
-  const [commitMutation] = useMutation(UpdateTaskStatusMutation);
-
-  const handleStatusToggle = (task: Task) => {
+  const handleStatusToggle = async (task: Task) => {
     const newStatus = task.status === 'PENDING' ? 'COMPLETED' : 'PENDING';
     
-    commitMutation({
-      variables: {
-        input: {
-          id: task.id,
-          status: newStatus,
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:5001/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      },
-      onCompleted: () => {
+        body: JSON.stringify({
+          query: `
+            mutation UpdateTaskStatus($input: UpdateTaskStatusInput!) {
+              updateTaskStatus(input: $input) {
+                id
+                title
+                description
+                status
+                createdAt
+                updatedAt
+              }
+            }
+          `,
+          variables: {
+            input: {
+              id: task.id,
+              status: newStatus,
+            },
+          },
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.data?.updateTaskStatus) {
         onTaskUpdated();
-      },
-      onError: (error) => {
-        console.error('Failed to update task:', error);
-      },
-    });
+      } else {
+        console.error('Failed to update task:', result.errors);
+      }
+    } catch (error) {
+      console.error('Failed to update task:', error);
+    }
   };
 
   if (tasks.length === 0) {

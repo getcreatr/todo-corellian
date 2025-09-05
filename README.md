@@ -1,6 +1,6 @@
-# TO-DO List Application Technical Assessment
+# Corellian Software Task Manager
 
-This is my submission for the Corellian Software technical assessment. Built a basic task manager with ASP.NET Core GraphQL backend and Next.js frontend, all containerized with Docker.
+This is my submission for the Corellian Software technical assessment. Built a task manager with ASP.NET Core GraphQL backend and Next.js frontend, all containerized with Docker.
 
 ## Requirements Met
 
@@ -59,7 +59,7 @@ GraphQL: http://localhost:5001/graphql
 cd backend/TodoApi && dotnet run
 
 # Frontend
-cd frontend && npm install && npm run dev
+cd frontend && bun install && bun run dev
 ```
 
 ## GraphQL API
