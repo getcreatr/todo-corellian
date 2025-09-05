@@ -8,18 +8,14 @@ services:
     ports:
       - "5001:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Data Source=/app/data/todo.db
     volumes:
       - todo-data:/app/data
     networks:
       - todo-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/graphql"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    restart: unless-stopped
 
   frontend:
     build:
@@ -31,10 +27,10 @@ services:
       - NODE_ENV=production
       - NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:5001/graphql
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     networks:
       - todo-network
+    restart: unless-stopped
 
 volumes:
   todo-data:
