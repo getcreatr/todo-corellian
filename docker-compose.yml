@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
@@ -6,7 +6,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:8080"
+      - "5001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
@@ -26,10 +26,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3007:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:5000/graphql
+      - NEXT_PUBLIC_GRAPHQL_ENDPOINT=http://localhost:5001/graphql
     depends_on:
       backend:
         condition: service_healthy
