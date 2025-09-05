@@ -8,12 +8,7 @@ namespace TodoApi.GraphQL
     {
         public async Task<List<TaskItem>> GetAllTasks(TodoContext context)
         {
-            return await context.Tasks.ToListAsync();
-        }
-
-        public async Task<TaskItem?> GetTaskById(TodoContext context, int id)
-        {
-            return await context.Tasks.FindAsync(id);
+            return await context.Tasks.OrderBy(t => t.Status).ThenByDescending(t => t.UpdatedAt).ToListAsync();
         }
     }
 }

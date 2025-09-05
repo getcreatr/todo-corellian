@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using HotChocolate;
 
 namespace TodoApi.Models
 {
     public class TaskItem
     {
+        [GraphQLType(typeof(IdType))]
         public int Id { get; set; }
         
         [Required]

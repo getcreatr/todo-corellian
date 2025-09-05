@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Data;
 using TodoApi.Models;
+using HotChocolate;
 
 namespace TodoApi.GraphQL
 {
@@ -39,21 +40,8 @@ namespace TodoApi.GraphQL
             return task;
         }
 
-        public async Task<bool> DeleteTask(TodoContext context, int id)
-        {
-            var task = await context.Tasks.FindAsync(id);
-            if (task == null)
-            {
-                return false;
-            }
-
-            context.Tasks.Remove(task);
-            await context.SaveChangesAsync();
-            
-            return true;
-        }
     }
 
     public record CreateTaskInput(string Title, string? Description);
-    public record UpdateTaskStatusInput(int Id, Models.TaskStatus Status);
+    public record UpdateTaskStatusInput([property: GraphQLType(typeof(IdType))] int Id, Models.TaskStatus Status);
 }
