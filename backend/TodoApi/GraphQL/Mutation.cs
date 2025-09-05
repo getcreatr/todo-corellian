@@ -6,14 +6,13 @@ namespace TodoApi.GraphQL
 {
     public class Mutation
     {
-        [UseDbContext(typeof(TodoContext))]
-        public async Task<TaskItem> CreateTask([ScopedService] TodoContext context, CreateTaskInput input)
+        public async Task<TaskItem> CreateTask(TodoContext context, CreateTaskInput input)
         {
             var task = new TaskItem
             {
                 Title = input.Title,
                 Description = input.Description,
-                Status = TaskStatus.Pending,
+                Status = Models.TaskStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -24,13 +23,12 @@ namespace TodoApi.GraphQL
             return task;
         }
 
-        [UseDbContext(typeof(TodoContext))]
-        public async Task<TaskItem> UpdateTaskStatus([ScopedService] TodoContext context, UpdateTaskStatusInput input)
+        public async Task<TaskItem> UpdateTaskStatus(TodoContext context, UpdateTaskStatusInput input)
         {
             var task = await context.Tasks.FindAsync(input.Id);
             if (task == null)
             {
-                throw new GraphQLException($"Task with ID {input.Id} not found.");
+                throw new Exception($"Task with ID {input.Id} not found.");
             }
 
             task.Status = input.Status;
@@ -41,8 +39,7 @@ namespace TodoApi.GraphQL
             return task;
         }
 
-        [UseDbContext(typeof(TodoContext))]
-        public async Task<bool> DeleteTask([ScopedService] TodoContext context, int id)
+        public async Task<bool> DeleteTask(TodoContext context, int id)
         {
             var task = await context.Tasks.FindAsync(id);
             if (task == null)
@@ -58,5 +55,5 @@ namespace TodoApi.GraphQL
     }
 
     public record CreateTaskInput(string Title, string? Description);
-    public record UpdateTaskStatusInput(int Id, TaskStatus Status);
+    public record UpdateTaskStatusInput(int Id, Models.TaskStatus Status);
 }

@@ -11,17 +11,14 @@ builder.Services.AddDbContext<TodoContext>(options =>
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
-    .AddMutationType<Mutation>()
-    .AddProjections()
-    .AddFiltering()
-    .AddSorting();
+    .AddMutationType<Mutation>();
 
 // Add CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:3007")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

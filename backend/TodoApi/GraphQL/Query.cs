@@ -6,17 +6,12 @@ namespace TodoApi.GraphQL
 {
     public class Query
     {
-        [UseDbContext(typeof(TodoContext))]
-        [UseProjection]
-        [UseFiltering]
-        [UseSorting]
-        public IQueryable<TaskItem> GetAllTasks([ScopedService] TodoContext context)
+        public async Task<List<TaskItem>> GetAllTasks(TodoContext context)
         {
-            return context.Tasks;
+            return await context.Tasks.ToListAsync();
         }
 
-        [UseDbContext(typeof(TodoContext))]
-        public async Task<TaskItem?> GetTaskById([ScopedService] TodoContext context, int id)
+        public async Task<TaskItem?> GetTaskById(TodoContext context, int id)
         {
             return await context.Tasks.FindAsync(id);
         }
