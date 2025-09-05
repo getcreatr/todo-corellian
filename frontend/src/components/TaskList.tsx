@@ -24,8 +24,8 @@ interface Task {
   readonly title: string;
   readonly description: string | null | undefined;
   readonly status: TaskStatus;
-  readonly createdAt: any;
-  readonly updatedAt: any;
+  readonly createdAt: string;
+  readonly updatedAt: string;
 }
 
 export function TaskList() {

@@ -5,8 +5,6 @@ import {
   Provider,
   defaultTheme,
   Heading,
-  Flex,
-  Text,
 } from '@adobe/react-spectrum';
 import { RelayProvider } from './RelayProvider';
 import { TaskForm } from './TaskForm';

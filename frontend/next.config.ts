@@ -2,12 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   webpack: (config, { isServer }) => {
     // Fix React Spectrum import issues
     config.resolve.alias = {
